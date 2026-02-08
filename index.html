@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coffee Ratio Calc</title>
+    <title>おうちコーヒー計算機</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     
     <style>
         body {
             background-color: #f8f9fa;
-            color: #333;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #4b3621; /* 少しコーヒーっぽい色に */
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -30,35 +30,44 @@
             border: 2px solid #e9ecef;
             border-radius: 12px;
             padding: 12px;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: #495057;
             text-align: center;
             background-color: #f8f9fa;
         }
         .form-control:focus {
-            border-color: #0d6efd;
+            border-color: #8b5e3c; /* コーヒー色 */
             background-color: #fff;
-            box-shadow: none;
+            box-shadow: 0 0 0 0.2rem rgba(139, 94, 60, 0.15);
         }
         .cup-input {
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
         .section-divider {
             border-top: 2px dashed #e9ecef;
-            margin: 1.5rem 0;
+            margin: 1.8rem 0;
             position: relative;
         }
         .section-label {
             position: absolute;
-            top: -12px;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
             background: #fff;
-            padding: 0 10px;
+            padding: 0 12px;
             color: #adb5bd;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .ratio-badge {
+            background-color: #e9ecef;
+            color: #6c757d;
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -66,60 +75,60 @@
 
 <div class="container px-3">
     <div class="card p-4">
-        <div class="text-center mb-3">
-            <h2 class="fw-bold mb-1"><i class="bi bi-cup-hot"></i> Coffee Calc</h2>
-            <span class="badge bg-light text-dark border mt-2">Ratio: 650ml / 32g</span>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mb-2"><i class="bi bi-cup-hot-fill"></i>Coffee Calc</h2>
+            <span class="ratio-badge">基準: 水650ml / 豆32g</span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label text-muted small fw-bold">TOTAL WATER</label>
+            <label class="form-label text-muted small fw-bold">水の量（Total）</label>
             <div class="input-group">
                 <input type="number" id="water" class="form-control" placeholder="0" inputmode="numeric" min="0" step="10">
-                <span class="input-group-text border-0 bg-transparent">ml</span>
+                <span class="input-group-text border-0 bg-transparent fw-bold">ml</span>
             </div>
-            <div class="form-text text-end text-muted" style="font-size: 0.7rem;">※10ml単位</div>
+            <div class="form-text text-end text-muted" style="font-size: 0.75rem;">※10ml単位</div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label text-muted small fw-bold">TOTAL BEANS</label>
+            <label class="form-label text-muted small fw-bold">豆の量（Total）</label>
             <div class="input-group">
                 <input type="number" id="beans" class="form-control" placeholder="0" inputmode="numeric" min="0" step="1">
-                <span class="input-group-text border-0 bg-transparent">g</span>
+                <span class="input-group-text border-0 bg-transparent fw-bold">g</span>
             </div>
-             <div class="form-text text-end text-muted" style="font-size: 0.7rem;">※1g単位</div>
+             <div class="form-text text-end text-muted" style="font-size: 0.75rem;">※1g単位</div>
         </div>
 
         <div class="section-divider">
-            <span class="section-label">ADD CUPS</span>
+            <span class="section-label">カップ数で計算</span>
         </div>
 
         <div class="row g-2 align-items-center mb-3">
             <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup fs-5"></i></span>
+                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup fs-5 text-secondary"></i></span>
                     <input type="number" id="mug" class="form-control cup-input" placeholder="0" inputmode="numeric" min="0">
                 </div>
             </div>
-            <div class="col-4 text-muted small">
-                Mug<br>(250ml)
+            <div class="col-4 text-secondary small fw-bold">
+                マグ<br><span style="font-weight: normal;">(250ml)</span>
             </div>
         </div>
 
         <div class="row g-2 align-items-center mb-4">
             <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup-hot fs-5"></i></span>
+                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup-hot fs-5 text-secondary"></i></span>
                     <input type="number" id="demi" class="form-control cup-input" placeholder="0" inputmode="numeric" min="0">
                 </div>
             </div>
-            <div class="col-4 text-muted small">
-                Demi<br>(120ml)
+            <div class="col-4 text-secondary small fw-bold">
+                デミタス<br><span style="font-weight: normal;">(120ml)</span>
             </div>
         </div>
 
-        <div class="d-grid">
-            <button class="btn btn-light text-muted" onclick="resetFields()">
-                <i class="bi bi-arrow-counterclockwise"></i> Reset All
+        <div class="d-grid pt-2">
+            <button class="btn btn-outline-secondary py-2" onclick="resetFields()" style="border-radius: 12px; border-width: 2px;">
+                <i class="bi bi-arrow-counterclockwise"></i> リセット
             </button>
         </div>
     </div>
@@ -141,7 +150,6 @@
     function getCleanValue(inputElement) {
         const val = parseFloat(inputElement.value);
         if (isNaN(val)) return 0;
-        // 絶対値を取り(Math.abs)、四捨五入して整数(Math.round)にする
         return Math.round(Math.abs(val));
     }
 
@@ -149,16 +157,8 @@
 
     // 1. 水から計算
     function updateFromWater(keepCups = false) {
-        // 水入力欄の値を取得してきれいにする
         let water = getCleanValue(waterInput);
-
         if (water > 0) {
-            // もし入力が負だったり小数だった場合、画面上の表示も整数の値に書き換えてあげる（UX向上）
-            if (waterInput.value != water) { 
-                // ただし編集中に勝手に書き換わると使いにくいので、フォーカスが外れた時か、明らかな異常値の時のみ書き換えるなどの制御もできるが
-                // ここではシンプルに計算結果のみを表示するスタイルにします
-            }
-            
             const beans = water / WATER_PER_BEAN;
             beansInput.value = Math.round(beans);
         } else {
@@ -174,10 +174,8 @@
     // 2. 豆から計算
     function updateFromBeans() {
         let beans = getCleanValue(beansInput);
-
         if (beans > 0) {
             const water = beans * WATER_PER_BEAN;
-            // 10ml単位に丸める
             waterInput.value = Math.round(water / 10) * 10;
         } else {
             waterInput.value = '';
@@ -213,8 +211,7 @@
         waterInput.focus();
     }
 
-    // --- マイナス入力防止のためのガード ---
-    // キーボードを押した瞬間に「-」や「.」を無効化する
+    // --- マイナス入力防止 ---
     function preventInvalidChars(e) {
         if (e.key === '-' || e.key === '.' || e.key === 'e') {
             e.preventDefault();
@@ -222,17 +219,13 @@
     }
 
     // --- イベントリスナー ---
-    
-    // 入力時計算
     waterInput.addEventListener('input', () => updateFromWater(false));
     beansInput.addEventListener('input', updateFromBeans);
     mugInput.addEventListener('input', updateFromCups);
     demiInput.addEventListener('input', updateFromCups);
 
-    // 無効文字の入力防止 (PCや一部のAndroid用)
     [waterInput, beansInput, mugInput, demiInput].forEach(input => {
         input.addEventListener('keydown', preventInvalidChars);
-        // ペースト時などにマイナスが入らないように、変更時にも再チェック（inputイベント内でgetCleanValueが処理するのでOK）
     });
 
 </script>
