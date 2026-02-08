@@ -1,14 +1,14 @@
 # ☕ Coffee Ratio Calculator
 
 毎日のコーヒー抽出をサポートする、シンプルで高速なWebアプリです。
-自宅のキッチンで「水650ml : 豆32g」の黄金比率を瞬時に計算するために作成しました。
+自宅のキッチンで「水650ml : 豆32g」の比率を計算するために作成しました。
 
 ## 📱 使い方 (Access)
 
 スマホのカメラで以下のQRコードを読み取るか、リンクをクリックしてください。
 キッチンにQRコードを貼っておくと便利です。
 
-👉 **[アプリを開く (Launch App)](https://[YOUR_USERNAME].github.io/coffee-ratio/)**
+👉 **[アプリを開く (Launch App)](https://kqkq1015.github.io/coffee-ratio/)**
 
 <p align="left">
   <img src="images/qr.png" width="150" alt="QR Code">
@@ -46,4 +46,4 @@
 | 650 ml | 32 g | approx 1 : 20.3 |
 
 ---
-&copy; 2026 Yura Nishihara
+&copy; 2026 KQKQ1015
