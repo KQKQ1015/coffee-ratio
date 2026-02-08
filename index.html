@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>おうちコーヒー計算機</title>
+    <title>分量計算機</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     
     <style>
         body {
             background-color: #f8f9fa;
-            color: #4b3621; /* 少しコーヒーっぽい色に */
+            color: #4b3621;
             font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
             min-height: 100vh;
             display: flex;
@@ -26,7 +26,7 @@
             max-width: 380px;
             background: #ffffff;
         }
-        .form-control {
+        .form-control, .form-select {
             border: 2px solid #e9ecef;
             border-radius: 12px;
             padding: 12px;
@@ -36,14 +36,17 @@
             text-align: center;
             background-color: #f8f9fa;
         }
-        .form-control:focus {
-            border-color: #8b5e3c; /* コーヒー色 */
+        .form-control:focus, .form-select:focus {
+            border-color: #8b5e3c;
             background-color: #fff;
             box-shadow: 0 0 0 0.2rem rgba(139, 94, 60, 0.15);
         }
-        .cup-input {
-            font-size: 1.1rem;
+        /* セレクトボックスの矢印調整 */
+        .form-select {
+            background-position: right 0.75rem center;
+            cursor: pointer;
         }
+        
         .section-divider {
             border-top: 2px dashed #e9ecef;
             margin: 1.8rem 0;
@@ -76,7 +79,7 @@
 <div class="container px-3">
     <div class="card p-4">
         <div class="text-center mb-4">
-            <h2 class="fw-bold mb-2"><i class="bi bi-cup-hot-fill"></i>Coffee Calc</h2>
+            <h2 class="fw-bold mb-2"><i class="bi bi-cup-hot-fill"></i> コーヒ計算機</h2>
             <span class="ratio-badge">基準: 水650ml / 豆32g</span>
         </div>
 
@@ -99,14 +102,26 @@
         </div>
 
         <div class="section-divider">
-            <span class="section-label">カップ数で計算</span>
+            <span class="section-label">カップ数を選択</span>
         </div>
 
         <div class="row g-2 align-items-center mb-3">
             <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup fs-5 text-secondary"></i></span>
-                    <input type="number" id="mug" class="form-control cup-input" placeholder="0" inputmode="numeric" min="0">
+                    <span class="input-group-text border-0 bg-white ps-0 pe-2"><i class="bi bi-cup fs-5 text-secondary"></i></span>
+                    <select id="mug" class="form-select text-center">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
                 </div>
             </div>
             <div class="col-4 text-secondary small fw-bold">
@@ -117,8 +132,20 @@
         <div class="row g-2 align-items-center mb-4">
             <div class="col-8">
                 <div class="input-group">
-                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup-hot fs-5 text-secondary"></i></span>
-                    <input type="number" id="demi" class="form-control cup-input" placeholder="0" inputmode="numeric" min="0">
+                    <span class="input-group-text border-0 bg-white ps-0 pe-2"><i class="bi bi-cup-hot fs-5 text-secondary"></i></span>
+                    <select id="demi" class="form-select text-center">
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
                 </div>
             </div>
             <div class="col-4 text-secondary small fw-bold">
@@ -146,7 +173,7 @@
     const mugInput = document.getElementById('mug');
     const demiInput = document.getElementById('demi');
 
-    // --- 入力値を正の整数にするヘルパー関数 ---
+    // --- ヘルパー関数 ---
     function getCleanValue(inputElement) {
         const val = parseFloat(inputElement.value);
         if (isNaN(val)) return 0;
@@ -155,7 +182,6 @@
 
     // --- 計算ロジック ---
 
-    // 1. 水から計算
     function updateFromWater(keepCups = false) {
         let water = getCleanValue(waterInput);
         if (water > 0) {
@@ -165,13 +191,13 @@
             beansInput.value = '';
         }
         
+        // 手動入力されたらセレクトボックスは「0」に戻す
         if (!keepCups) {
-            mugInput.value = '';
-            demiInput.value = '';
+            mugInput.value = '0';
+            demiInput.value = '0';
         }
     }
 
-    // 2. 豆から計算
     function updateFromBeans() {
         let beans = getCleanValue(beansInput);
         if (beans > 0) {
@@ -180,14 +206,15 @@
         } else {
             waterInput.value = '';
         }
-        mugInput.value = '';
-        demiInput.value = '';
+        // 手動入力されたらセレクトボックスは「0」に戻す
+        mugInput.value = '0';
+        demiInput.value = '0';
     }
 
-    // 3. カップ数から計算
     function updateFromCups() {
-        const mugCount = getCleanValue(mugInput);
-        const demiCount = getCleanValue(demiInput);
+        // セレクトボックスの値を取得
+        const mugCount = parseInt(mugInput.value, 10);
+        const demiCount = parseInt(demiInput.value, 10);
 
         if (mugCount === 0 && demiCount === 0) {
             waterInput.value = '';
@@ -202,29 +229,30 @@
         updateFromWater(true);
     }
 
-    // 全リセット
     function resetFields() {
         waterInput.value = '';
         beansInput.value = '';
-        mugInput.value = '';
-        demiInput.value = '';
-        waterInput.focus();
-    }
-
-    // --- マイナス入力防止 ---
-    function preventInvalidChars(e) {
-        if (e.key === '-' || e.key === '.' || e.key === 'e') {
-            e.preventDefault();
-        }
+        // セレクトボックスを0に戻す
+        mugInput.value = '0';
+        demiInput.value = '0';
+        waterInput.blur();
     }
 
     // --- イベントリスナー ---
     waterInput.addEventListener('input', () => updateFromWater(false));
     beansInput.addEventListener('input', updateFromBeans);
-    mugInput.addEventListener('input', updateFromCups);
-    demiInput.addEventListener('input', updateFromCups);
+    
+    // セレクトボックスは「change」イベントで監視
+    mugInput.addEventListener('change', updateFromCups);
+    demiInput.addEventListener('change', updateFromCups);
 
-    [waterInput, beansInput, mugInput, demiInput].forEach(input => {
+    // マイナスキー入力防止
+    function preventInvalidChars(e) {
+        if (e.key === '-' || e.key === '.' || e.key === 'e') {
+            e.preventDefault();
+        }
+    }
+    [waterInput, beansInput].forEach(input => {
         input.addEventListener('keydown', preventInvalidChars);
     });
 
