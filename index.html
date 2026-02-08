@@ -42,7 +42,7 @@
             box-shadow: none;
         }
         .cup-input {
-            font-size: 1rem; /* 杯数入力は少し小さめに */
+            font-size: 1rem;
         }
         .section-divider {
             border-top: 2px dashed #e9ecef;
@@ -72,7 +72,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label text-muted small fw-bold">WATER (水)</label>
+            <label class="form-label text-muted small fw-bold">TOTAL WATER</label>
             <div class="input-group">
                 <input type="number" id="water" class="form-control" placeholder="0" inputmode="decimal">
                 <span class="input-group-text border-0 bg-transparent">ml</span>
@@ -80,7 +80,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label text-muted small fw-bold">BEANS (豆)</label>
+            <label class="form-label text-muted small fw-bold">TOTAL BEANS</label>
             <div class="input-group">
                 <input type="number" id="beans" class="form-control" placeholder="0" inputmode="decimal">
                 <span class="input-group-text border-0 bg-transparent">g</span>
@@ -88,7 +88,7 @@
         </div>
 
         <div class="section-divider">
-            <span class="section-label">QUICK CUPS</span>
+            <span class="section-label">ADD CUPS</span>
         </div>
 
         <div class="row g-2 align-items-center mb-3">
@@ -125,7 +125,7 @@
 
 <script>
     // --- 設定値 ---
-    const WATER_PER_BEAN = 650.0 / 32.0; // 約 20.3125
+    const WATER_PER_BEAN = 650.0 / 32.0; 
     const VOL_MUG = 250;
     const VOL_DEMI = 120;
 
@@ -137,8 +137,8 @@
 
     // --- 計算ロジック ---
 
-    // 1. 水から計算 (豆を更新)
-    function updateFromWater(clearCups = true) {
+    // 1. 水から計算 (豆を更新、カップ入力はクリア)
+    function updateFromWater(keepCups = false) {
         const water = parseFloat(waterInput.value);
         if (!isNaN(water)) {
             const beans = water / WATER_PER_BEAN;
@@ -146,10 +146,15 @@
         } else {
             beansInput.value = '';
         }
-        if (clearCups) clearCupInputs();
+        
+        // 水を手動でいじった場合、カップの組み合わせと一致しなくなるのでカップ欄は消す
+        if (!keepCups) {
+            mugInput.value = '';
+            demiInput.value = '';
+        }
     }
 
-    // 2. 豆から計算 (水を更新)
+    // 2. 豆から計算 (水を更新、カップ入力はクリア)
     function updateFromBeans() {
         const beans = parseFloat(beansInput.value);
         if (!isNaN(beans)) {
@@ -158,37 +163,28 @@
         } else {
             waterInput.value = '';
         }
-        clearCupInputs();
-    }
-
-    // 3. マグカップから計算
-    function updateFromMug() {
-        const count = parseFloat(mugInput.value);
-        if (!isNaN(count)) {
-            waterInput.value = count * VOL_MUG;
-            demiInput.value = ''; // デミタスは消す
-            updateFromWater(false); // 水変更イベントを発火(Cup入力は消さない)
-        } else {
-            resetFields();
-        }
-    }
-
-    // 4. デミタスカップから計算
-    function updateFromDemi() {
-        const count = parseFloat(demiInput.value);
-        if (!isNaN(count)) {
-            waterInput.value = count * VOL_DEMI;
-            mugInput.value = ''; // マグは消す
-            updateFromWater(false); // 水変更イベントを発火(Cup入力は消さない)
-        } else {
-            resetFields();
-        }
-    }
-
-    // カップ入力をクリアする関数 (手動で水などをいじった時用)
-    function clearCupInputs() {
         mugInput.value = '';
         demiInput.value = '';
+    }
+
+    // 3. カップ数から計算 (両方のカップを見て合計する)
+    function updateFromCups() {
+        // 空欄の場合は0として扱う
+        const mugCount = parseFloat(mugInput.value) || 0;
+        const demiCount = parseFloat(demiInput.value) || 0;
+
+        // 両方とも入力がない(空欄または0)ならリセット
+        if (mugInput.value === '' && demiInput.value === '') {
+            waterInput.value = '';
+            beansInput.value = '';
+            return;
+        }
+
+        const totalWater = (mugCount * VOL_MUG) + (demiCount * VOL_DEMI);
+        waterInput.value = totalWater;
+        
+        // 水が変わったので豆も再計算 (ただしカップ入力は消さないフラグを渡す)
+        updateFromWater(true);
     }
 
     // 全リセット
@@ -197,13 +193,16 @@
         beansInput.value = '';
         mugInput.value = '';
         demiInput.value = '';
+        waterInput.focus(); // リセット後は水入力にフォーカス
     }
 
     // --- イベントリスナー ---
-    waterInput.addEventListener('input', () => updateFromWater(true));
+    waterInput.addEventListener('input', () => updateFromWater(false));
     beansInput.addEventListener('input', updateFromBeans);
-    mugInput.addEventListener('input', updateFromMug);
-    demiInput.addEventListener('input', updateFromDemi);
+    
+    // マグとデミ、どちらを触っても同じ関数(updateFromCups)を呼ぶ
+    mugInput.addEventListener('input', updateFromCups);
+    demiInput.addEventListener('input', updateFromCups);
 
 </script>
 </body>
