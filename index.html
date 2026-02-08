@@ -3,74 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coffee Ratio</title>
+    <title>Coffee Ratio Calc</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
     <style>
-        body { background-color: #f4f1ea; color: #4b3621; font-family: sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .card { border: none; border-radius: 20px; box-shadow: 0 10px 25px rgba(75, 54, 33, 0.15); width: 100%; max-width: 400px; }
-        .form-control { border-radius: 10px; border: 2px solid #e0d8c3; font-size: 1.2rem; padding: 15px; }
-        .form-control:focus { border-color: #8b5e3c; box-shadow: 0 0 0 0.2rem rgba(139, 94, 60, 0.25); }
-        .input-group-text { background-color: #e0d8c3; border: none; color: #4b3621; font-weight: bold; }
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 50px;
+        }
+        .card {
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 380px;
+            background: #ffffff;
+        }
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            background-color: #fff;
+            box-shadow: none;
+        }
+        .cup-input {
+            font-size: 1rem; /* 杯数入力は少し小さめに */
+        }
+        .section-divider {
+            border-top: 2px dashed #e9ecef;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .section-label {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 0 10px;
+            color: #adb5bd;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-<div class="container px-4">
+
+<div class="container px-3">
     <div class="card p-4">
-        <div class="text-center mb-4"><h1><i class="bi bi-cup-hot-fill"></i> Brew Calc</h1></div>
-        
+        <div class="text-center mb-3">
+            <h2 class="fw-bold mb-1"><i class="bi bi-cup-hot"></i> Coffee Calc</h2>
+            <span class="badge bg-light text-dark border mt-2">Ratio: 650ml / 32g</span>
+        </div>
+
         <div class="mb-3">
-            <label class="form-label fw-bold">水 (Water)</label>
+            <label class="form-label text-muted small fw-bold">WATER (水)</label>
             <div class="input-group">
                 <input type="number" id="water" class="form-control" placeholder="0" inputmode="decimal">
-                <span class="input-group-text">ml</span>
+                <span class="input-group-text border-0 bg-transparent">ml</span>
             </div>
         </div>
-
-        <div class="mb-4">
-            <label class="form-label fw-bold">豆 (Beans)</label>
-            <div class="input-group">
-                <input type="number" id="beans" class="form-control" placeholder="0" inputmode="decimal">
-                <span class="input-group-text">g</span>
-            </div>
-        </div>
-
-        <hr class="my-4" style="border-top: 2px dashed #ccc;">
 
         <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <label class="form-label small text-muted mb-0">抽出比率 (Ratio)</label>
-                <span class="badge bg-secondary" id="ratio-display">1 : 16</span>
+            <label class="form-label text-muted small fw-bold">BEANS (豆)</label>
+            <div class="input-group">
+                <input type="number" id="beans" class="form-control" placeholder="0" inputmode="decimal">
+                <span class="input-group-text border-0 bg-transparent">g</span>
             </div>
-            <input type="range" class="form-range" id="ratio" min="10" max="20" step="0.5" value="16">
-            <div class="d-flex justify-content-between small text-muted"><span>濃い (1:10)</span><span>薄い (1:20)</span></div>
         </div>
 
-        <div class="d-grid mt-4">
-            <button class="btn btn-outline-secondary" onclick="resetFields()"><i class="bi bi-arrow-counterclockwise"></i> リセット</button>
+        <div class="section-divider">
+            <span class="section-label">QUICK CUPS</span>
+        </div>
+
+        <div class="row g-2 align-items-center mb-3">
+            <div class="col-8">
+                <div class="input-group">
+                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup fs-5"></i></span>
+                    <input type="number" id="mug" class="form-control cup-input" placeholder="0" inputmode="decimal">
+                </div>
+            </div>
+            <div class="col-4 text-muted small">
+                Mug<br>(250ml)
+            </div>
+        </div>
+
+        <div class="row g-2 align-items-center mb-4">
+            <div class="col-8">
+                <div class="input-group">
+                    <span class="input-group-text border-0 bg-white"><i class="bi bi-cup-hot fs-5"></i></span>
+                    <input type="number" id="demi" class="form-control cup-input" placeholder="0" inputmode="decimal">
+                </div>
+            </div>
+            <div class="col-4 text-muted small">
+                Demi<br>(120ml)
+            </div>
+        </div>
+
+        <div class="d-grid">
+            <button class="btn btn-light text-muted" onclick="resetFields()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset All
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-    const w = document.getElementById('water'), b = document.getElementById('beans'), r = document.getElementById('ratio'), d = document.getElementById('ratio-display');
-    const calc = (src) => {
-        const ratio = parseFloat(r.value);
-        if (src === 'w') {
-            const val = parseFloat(w.value);
-            b.value = isNaN(val) ? '' : Math.round(val / ratio * 10) / 10;
+    // --- 設定値 ---
+    const WATER_PER_BEAN = 650.0 / 32.0; // 約 20.3125
+    const VOL_MUG = 250;
+    const VOL_DEMI = 120;
+
+    // --- 要素の取得 ---
+    const waterInput = document.getElementById('water');
+    const beansInput = document.getElementById('beans');
+    const mugInput = document.getElementById('mug');
+    const demiInput = document.getElementById('demi');
+
+    // --- 計算ロジック ---
+
+    // 1. 水から計算 (豆を更新)
+    function updateFromWater(clearCups = true) {
+        const water = parseFloat(waterInput.value);
+        if (!isNaN(water)) {
+            const beans = water / WATER_PER_BEAN;
+            beansInput.value = Math.round(beans * 10) / 10;
         } else {
-            const val = parseFloat(b.value);
-            w.value = isNaN(val) ? '' : Math.round(val * ratio);
+            beansInput.value = '';
         }
-    };
-    w.addEventListener('input', () => calc('w'));
-    b.addEventListener('input', () => calc('b'));
-    r.addEventListener('input', () => {
-        d.textContent = `1 : ${r.value}`;
-        if (w.value) calc('w'); else if (b.value) calc('b');
-    });
-    function resetFields() { w.value = ''; b.value = ''; w.focus(); }
+        if (clearCups) clearCupInputs();
+    }
+
+    // 2. 豆から計算 (水を更新)
+    function updateFromBeans() {
+        const beans = parseFloat(beansInput.value);
+        if (!isNaN(beans)) {
+            const water = beans * WATER_PER_BEAN;
+            waterInput.value = Math.round(water);
+        } else {
+            waterInput.value = '';
+        }
+        clearCupInputs();
+    }
+
+    // 3. マグカップから計算
+    function updateFromMug() {
+        const count = parseFloat(mugInput.value);
+        if (!isNaN(count)) {
+            waterInput.value = count * VOL_MUG;
+            demiInput.value = ''; // デミタスは消す
+            updateFromWater(false); // 水変更イベントを発火(Cup入力は消さない)
+        } else {
+            resetFields();
+        }
+    }
+
+    // 4. デミタスカップから計算
+    function updateFromDemi() {
+        const count = parseFloat(demiInput.value);
+        if (!isNaN(count)) {
+            waterInput.value = count * VOL_DEMI;
+            mugInput.value = ''; // マグは消す
+            updateFromWater(false); // 水変更イベントを発火(Cup入力は消さない)
+        } else {
+            resetFields();
+        }
+    }
+
+    // カップ入力をクリアする関数 (手動で水などをいじった時用)
+    function clearCupInputs() {
+        mugInput.value = '';
+        demiInput.value = '';
+    }
+
+    // 全リセット
+    function resetFields() {
+        waterInput.value = '';
+        beansInput.value = '';
+        mugInput.value = '';
+        demiInput.value = '';
+    }
+
+    // --- イベントリスナー ---
+    waterInput.addEventListener('input', () => updateFromWater(true));
+    beansInput.addEventListener('input', updateFromBeans);
+    mugInput.addEventListener('input', updateFromMug);
+    demiInput.addEventListener('input', updateFromDemi);
+
 </script>
 </body>
 </html>
