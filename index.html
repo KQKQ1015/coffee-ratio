@@ -74,17 +74,19 @@
         <div class="mb-3">
             <label class="form-label text-muted small fw-bold">TOTAL WATER</label>
             <div class="input-group">
-                <input type="number" id="water" class="form-control" placeholder="0" inputmode="decimal">
+                <input type="number" id="water" class="form-control" placeholder="0" inputmode="numeric" min="0" step="10">
                 <span class="input-group-text border-0 bg-transparent">ml</span>
             </div>
+            <div class="form-text text-end text-muted" style="font-size: 0.7rem;">※10ml単位</div>
         </div>
 
         <div class="mb-3">
             <label class="form-label text-muted small fw-bold">TOTAL BEANS</label>
             <div class="input-group">
-                <input type="number" id="beans" class="form-control" placeholder="0" inputmode="decimal">
+                <input type="number" id="beans" class="form-control" placeholder="0" inputmode="numeric" min="0" step="1">
                 <span class="input-group-text border-0 bg-transparent">g</span>
             </div>
+             <div class="form-text text-end text-muted" style="font-size: 0.7rem;">※1g単位</div>
         </div>
 
         <div class="section-divider">
@@ -95,7 +97,7 @@
             <div class="col-8">
                 <div class="input-group">
                     <span class="input-group-text border-0 bg-white"><i class="bi bi-cup fs-5"></i></span>
-                    <input type="number" id="mug" class="form-control cup-input" placeholder="0" inputmode="decimal">
+                    <input type="number" id="mug" class="form-control cup-input" placeholder="0" inputmode="numeric" min="0">
                 </div>
             </div>
             <div class="col-4 text-muted small">
@@ -107,7 +109,7 @@
             <div class="col-8">
                 <div class="input-group">
                     <span class="input-group-text border-0 bg-white"><i class="bi bi-cup-hot fs-5"></i></span>
-                    <input type="number" id="demi" class="form-control cup-input" placeholder="0" inputmode="decimal">
+                    <input type="number" id="demi" class="form-control cup-input" placeholder="0" inputmode="numeric" min="0">
                 </div>
             </div>
             <div class="col-4 text-muted small">
@@ -135,31 +137,48 @@
     const mugInput = document.getElementById('mug');
     const demiInput = document.getElementById('demi');
 
+    // --- 入力値を正の整数にするヘルパー関数 ---
+    function getCleanValue(inputElement) {
+        const val = parseFloat(inputElement.value);
+        if (isNaN(val)) return 0;
+        // 絶対値を取り(Math.abs)、四捨五入して整数(Math.round)にする
+        return Math.round(Math.abs(val));
+    }
+
     // --- 計算ロジック ---
 
-    // 1. 水から計算 (豆を更新、カップ入力はクリア)
+    // 1. 水から計算
     function updateFromWater(keepCups = false) {
-        const water = parseFloat(waterInput.value);
-        if (!isNaN(water)) {
+        // 水入力欄の値を取得してきれいにする
+        let water = getCleanValue(waterInput);
+
+        if (water > 0) {
+            // もし入力が負だったり小数だった場合、画面上の表示も整数の値に書き換えてあげる（UX向上）
+            if (waterInput.value != water) { 
+                // ただし編集中に勝手に書き換わると使いにくいので、フォーカスが外れた時か、明らかな異常値の時のみ書き換えるなどの制御もできるが
+                // ここではシンプルに計算結果のみを表示するスタイルにします
+            }
+            
             const beans = water / WATER_PER_BEAN;
-            beansInput.value = Math.round(beans * 10) / 10;
+            beansInput.value = Math.round(beans);
         } else {
             beansInput.value = '';
         }
         
-        // 水を手動でいじった場合、カップの組み合わせと一致しなくなるのでカップ欄は消す
         if (!keepCups) {
             mugInput.value = '';
             demiInput.value = '';
         }
     }
 
-    // 2. 豆から計算 (水を更新、カップ入力はクリア)
+    // 2. 豆から計算
     function updateFromBeans() {
-        const beans = parseFloat(beansInput.value);
-        if (!isNaN(beans)) {
+        let beans = getCleanValue(beansInput);
+
+        if (beans > 0) {
             const water = beans * WATER_PER_BEAN;
-            waterInput.value = Math.round(water);
+            // 10ml単位に丸める
+            waterInput.value = Math.round(water / 10) * 10;
         } else {
             waterInput.value = '';
         }
@@ -167,23 +186,21 @@
         demiInput.value = '';
     }
 
-    // 3. カップ数から計算 (両方のカップを見て合計する)
+    // 3. カップ数から計算
     function updateFromCups() {
-        // 空欄の場合は0として扱う
-        const mugCount = parseFloat(mugInput.value) || 0;
-        const demiCount = parseFloat(demiInput.value) || 0;
+        const mugCount = getCleanValue(mugInput);
+        const demiCount = getCleanValue(demiInput);
 
-        // 両方とも入力がない(空欄または0)ならリセット
-        if (mugInput.value === '' && demiInput.value === '') {
+        if (mugCount === 0 && demiCount === 0) {
             waterInput.value = '';
             beansInput.value = '';
             return;
         }
 
-        const totalWater = (mugCount * VOL_MUG) + (demiCount * VOL_DEMI);
-        waterInput.value = totalWater;
+        let totalWater = (mugCount * VOL_MUG) + (demiCount * VOL_DEMI);
+        totalWater = Math.round(totalWater / 10) * 10;
         
-        // 水が変わったので豆も再計算 (ただしカップ入力は消さないフラグを渡す)
+        waterInput.value = totalWater;
         updateFromWater(true);
     }
 
@@ -193,16 +210,30 @@
         beansInput.value = '';
         mugInput.value = '';
         demiInput.value = '';
-        waterInput.focus(); // リセット後は水入力にフォーカス
+        waterInput.focus();
+    }
+
+    // --- マイナス入力防止のためのガード ---
+    // キーボードを押した瞬間に「-」や「.」を無効化する
+    function preventInvalidChars(e) {
+        if (e.key === '-' || e.key === '.' || e.key === 'e') {
+            e.preventDefault();
+        }
     }
 
     // --- イベントリスナー ---
+    
+    // 入力時計算
     waterInput.addEventListener('input', () => updateFromWater(false));
     beansInput.addEventListener('input', updateFromBeans);
-    
-    // マグとデミ、どちらを触っても同じ関数(updateFromCups)を呼ぶ
     mugInput.addEventListener('input', updateFromCups);
     demiInput.addEventListener('input', updateFromCups);
+
+    // 無効文字の入力防止 (PCや一部のAndroid用)
+    [waterInput, beansInput, mugInput, demiInput].forEach(input => {
+        input.addEventListener('keydown', preventInvalidChars);
+        // ペースト時などにマイナスが入らないように、変更時にも再チェック（inputイベント内でgetCleanValueが処理するのでOK）
+    });
 
 </script>
 </body>
