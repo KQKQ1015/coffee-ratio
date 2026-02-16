@@ -89,39 +89,21 @@
 <div class="container px-3">
     <div class="card p-4">
         <div class="text-center mb-3">
-            <h2 class="fw-bold mb-2"><i class="bi bi-cup-hot-fill"></i> コーヒー計算機</h2>
-            <span class="ratio-badge" id="current-ratio-display">豆 : 水 = 1 : 20</span>
+            <h2 class="fw-bold mb-2"><i class="bi bi-cup-hot-fill"></i> コーヒ計算機</h2>
+            <span class="ratio-badge" id="current-ratio-display">豆 : 水 = 1 : 16</span>
         </div>
 
         <div class="mb-4">
             <div class="btn-group w-100" role="group">
-                <input type="radio" class="btn-check" name="strength" id="strength-weak" value="20" checked>
+                <input type="radio" class="btn-check" name="strength" id="strength-weak" value="20">
                 <label class="btn btn-outline-secondary" for="strength-weak">薄め</label>
 
-                <input type="radio" class="btn-check" name="strength" id="strength-normal" value="16">
+                <input type="radio" class="btn-check" name="strength" id="strength-normal" value="16" checked>
                 <label class="btn btn-outline-secondary" for="strength-normal">普通</label>
 
                 <input type="radio" class="btn-check" name="strength" id="strength-strong" value="12">
                 <label class="btn btn-outline-secondary" for="strength-strong">濃いめ</label>
             </div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label text-muted small fw-bold">水の量（Total）</label>
-            <div class="input-group">
-                <input type="number" id="water" class="form-control" placeholder="0" inputmode="numeric" min="0" step="10">
-                <span class="input-group-text border-0 bg-transparent fw-bold">ml</span>
-            </div>
-            <div class="form-text text-end text-muted" style="font-size: 0.75rem;">※10ml単位</div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label text-muted small fw-bold">豆の量（Total）</label>
-            <div class="input-group">
-                <input type="number" id="beans" class="form-control" placeholder="0" inputmode="numeric" min="0" step="1">
-                <span class="input-group-text border-0 bg-transparent fw-bold">g</span>
-            </div>
-             <div class="form-text text-end text-muted" style="font-size: 0.75rem;">※1g単位</div>
         </div>
 
         <div class="section-divider">
@@ -176,6 +158,28 @@
             </div>
         </div>
 
+        <div class="section-divider">
+            <span class="section-label">必要な分量</span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-muted small fw-bold">水の量（Total）</label>
+            <div class="input-group">
+                <input type="number" id="water" class="form-control" placeholder="0" inputmode="numeric" min="0" step="10">
+                <span class="input-group-text border-0 bg-transparent fw-bold">ml</span>
+            </div>
+            <div class="form-text text-end text-muted" style="font-size: 0.75rem;">※10ml単位</div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label text-muted small fw-bold">豆の量（Total）</label>
+            <div class="input-group">
+                <input type="number" id="beans" class="form-control" placeholder="0" inputmode="numeric" min="0" step="1">
+                <span class="input-group-text border-0 bg-transparent fw-bold">g</span>
+            </div>
+             <div class="form-text text-end text-muted" style="font-size: 0.75rem;">※1g単位</div>
+        </div>
+
         <div class="d-grid pt-2">
             <button class="btn btn-outline-secondary py-2" onclick="resetFields()" style="border-radius: 12px; border-width: 2px;">
                 <i class="bi bi-arrow-counterclockwise"></i> リセット
@@ -189,8 +193,8 @@
     const VOL_MUG = 250;
     const VOL_DEMI = 120;
     
-    // 現在の比率 (初期値: 薄め 1:20)
-    let currentRatio = 20.0;
+    // 現在の比率 (初期値を普通 1:16 に変更)
+    let currentRatio = 16.0;
 
     // --- 要素の取得 ---
     const waterInput = document.getElementById('water');
@@ -215,7 +219,6 @@
                 break;
             }
         }
-        // 変更点: ここも「豆 : 水 = ...」の形式に合わせました
         ratioDisplay.textContent = `豆 : 水 = 1 : ${currentRatio}`;
         
         // 再計算
